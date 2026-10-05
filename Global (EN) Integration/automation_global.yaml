@@ -2,22 +2,22 @@ alias: Zendure zenSDK (Gielz) Global
 description: Configuration Version (v20260824)
 triggers:
   - seconds: /5
-    id: control_trigger
+    id: aansturing_trigger
     trigger: time_pattern
   - id: heartbeat_trigger
     trigger: time_pattern
     minutes: /1
   - at: "00:00:00"
-    id: dynamic_midnight
+    id: dynamisch_middernacht
     trigger: time
   - entity_id:
       - input_select.zendure_operation_mode
-    id: mode_trigger
+    id: modus_trigger
     trigger: state
   - trigger: state
     entity_id:
       - sensor.dynamic_lowest_price_period
-    id: mode_dynamic_cheap
+    id: modus_dynamisch_goedkoop
     for:
       hours: 0
       minutes: 0
@@ -29,7 +29,7 @@ triggers:
   - trigger: state
     entity_id:
       - sensor.dynamic_highest_price_period
-    id: mode_dynamic_expensive
+    id: modus_dynamisch_duur
     for:
       hours: 0
       minutes: 0
@@ -41,15 +41,15 @@ triggers:
   - trigger: state
     entity_id:
       - input_number.dynamic_setting_minimal_spread
-    id: mode_dynamic_spread
+    id: modus_dynamisch_spread
   - trigger: state
     entity_id:
       - input_number.zendure_setting_max_charge_power
-    id: system_setting_max_charge_power
+    id: systeem_instelling_maxoplaadvermogen
   - trigger: state
     entity_id:
       - input_number.zendure_setting_max_discharge_power
-    id: system_setting_max_discharge_power
+    id: systeem_instelling_maxontlaadvermogen
   - trigger: state
     entity_id:
       - input_number.zendure_setting_minimum_allowed_state_of_charge
@@ -61,11 +61,11 @@ triggers:
   - trigger: state
     entity_id:
       - input_button.zendure_setting_set_default_settings
-    id: system_setting_recommended_settings
+    id: systeem_instelling_adviesinstellingen
   - trigger: state
     entity_id:
       - input_text.zendure_setting_ip_address
-    id: system_setting_zendure_ip
+    id: systeem_instelling_zendure_ip
   - trigger: state
     entity_id:
       - input_boolean.zendure_setting_pv_export_disabled
@@ -76,7 +76,7 @@ actions:
     choose:
       - conditions:
           - condition: trigger
-            id: mode_trigger
+            id: modus_trigger
           - condition: state
             entity_id: input_select.zendure_operation_mode
             state: Standby
@@ -92,7 +92,7 @@ actions:
         alias: Standby
       - conditions:
           - condition: trigger
-            id: mode_trigger
+            id: modus_trigger
           - condition: state
             entity_id: input_select.zendure_operation_mode
             state:
@@ -110,7 +110,7 @@ actions:
         alias: Manual
       - conditions:
           - condition: trigger
-            id: mode_trigger
+            id: modus_trigger
           - condition: state
             entity_id: input_select.zendure_operation_mode
             state: Smart Matching
@@ -121,7 +121,7 @@ actions:
         alias: Smart Matching
       - conditions:
           - condition: trigger
-            id: mode_trigger
+            id: modus_trigger
           - condition: state
             entity_id: input_select.zendure_operation_mode
             state: Dynamic Smart Matching
@@ -132,7 +132,7 @@ actions:
         alias: Dynamic Smart Matching
       - conditions:
           - condition: trigger
-            id: mode_trigger
+            id: modus_trigger
           - condition: state
             entity_id: input_select.zendure_operation_mode
             state:
@@ -144,7 +144,7 @@ actions:
         alias: Dynamic Smart Matching (Expensive)
       - conditions:
           - condition: trigger
-            id: mode_trigger
+            id: modus_trigger
           - condition: state
             entity_id: input_select.zendure_operation_mode
             state:
@@ -156,7 +156,7 @@ actions:
         alias: Dynamic Trading
       - conditions:
           - condition: trigger
-            id: mode_trigger
+            id: modus_trigger
           - condition: state
             entity_id: input_select.zendure_operation_mode
             state:
@@ -168,7 +168,7 @@ actions:
         alias: Dynamic Trading + Smart Matching
       - conditions:
           - condition: trigger
-            id: mode_trigger
+            id: modus_trigger
           - condition: state
             entity_id: input_select.zendure_operation_mode
             state: Smart Charge Only
@@ -179,7 +179,7 @@ actions:
         alias: Smart Charge Only
       - conditions:
           - condition: trigger
-            id: mode_trigger
+            id: modus_trigger
           - condition: state
             entity_id: input_select.zendure_operation_mode
             state: Smart Discharge Only
@@ -190,7 +190,7 @@ actions:
         alias: Smart Discharge Only
       - conditions:
           - condition: trigger
-            id: mode_trigger
+            id: modus_trigger
           - condition: state
             entity_id: input_select.zendure_operation_mode
             state:
@@ -208,7 +208,7 @@ actions:
         alias: Quick Discharge
       - conditions:
           - condition: trigger
-            id: mode_trigger
+            id: modus_trigger
           - condition: state
             entity_id: input_select.zendure_operation_mode
             state:
@@ -226,7 +226,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: state
             entity_id: sensor.zendure_storage_mode
             state:
@@ -258,7 +258,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: state
             entity_id: sensor.zendure_storage_mode
             state:
@@ -291,7 +291,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: state
             entity_id: input_boolean.zendure_setting_soc_protection_disabled
             state:
@@ -398,12 +398,12 @@ actions:
                       | float }}
                   - condition: trigger
                     id:
-                      - control_trigger
+                      - aansturing_trigger
         sequence:
           - data:
               sn: "{{ states('sensor.zendure_serial_number') }}"
-              setting_item: socSet
-              setting_value: >-
+              instellingitem: socSet
+              instellinginhoud: >-
                 {{
                 (states('input_number.zendure_setting_maximum_allowed_state_of_charge')
                 | int(0) * 10) }}
@@ -435,12 +435,12 @@ actions:
                       | float }}
                   - condition: trigger
                     id:
-                      - control_trigger
+                      - aansturing_trigger
         sequence:
           - data:
               sn: "{{ states('sensor.zendure_serial_number') }}"
-              setting_item: minSoc
-              setting_value: >-
+              instellingitem: minSoc
+              instellinginhoud: >-
                 {{
                 (states('input_number.zendure_setting_minimum_allowed_state_of_charge')
                 | int(0) * 10) }}
@@ -461,7 +461,7 @@ actions:
                 conditions:
                   - condition: trigger
                     id:
-                      - system_setting_max_charge_power
+                      - systeem_instelling_maxoplaadvermogen
               - condition: and
                 conditions:
                   - condition: template
@@ -472,12 +472,12 @@ actions:
                       float }}
                   - condition: trigger
                     id:
-                      - control_trigger
+                      - aansturing_trigger
         sequence:
           - data:
               sn: "{{ states('sensor.zendure_serial_number') }}"
-              setting_item: chargeMaxLimit
-              setting_value: >-
+              instellingitem: chargeMaxLimit
+              instellinginhoud: >-
                 {{ states('input_number.zendure_setting_max_charge_power') | int
                 }}
             action: rest_command.zendure_setting
@@ -497,7 +497,7 @@ actions:
                 conditions:
                   - condition: trigger
                     id:
-                      - system_setting_max_discharge_power
+                      - systeem_instelling_maxontlaadvermogen
               - condition: and
                 conditions:
                   - condition: template
@@ -508,12 +508,12 @@ actions:
                       | float }}
                   - condition: trigger
                     id:
-                      - control_trigger
+                      - aansturing_trigger
         sequence:
           - data:
               sn: "{{ states('sensor.zendure_serial_number') }}"
-              setting_item: inverseMaxPower
-              setting_value: >-
+              instellingitem: inverseMaxPower
+              instellinginhoud: >-
                 {{ states('input_number.zendure_setting_max_discharge_power') |
                 int }}
             action: rest_command.zendure_setting
@@ -529,8 +529,8 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - system_setting_recommended_settings
-              - system_setting_zendure_ip
+              - systeem_instelling_adviesinstellingen
+              - systeem_instelling_zendure_ip
         sequence:
           - action: input_number.set_value
             metadata: {}
@@ -611,7 +611,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: state
             entity_id: input_boolean.dynamic_discharging_running
             state:
@@ -641,7 +641,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: state
             entity_id: input_boolean.dynamic_charging_running
             state:
@@ -671,7 +671,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: template
             value_template: >-
               {{ states('sensor.zendure_set_charge_power') | float !=
@@ -713,7 +713,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: template
             value_template: >-
               {{ states('sensor.zendure_set_discharge_power') | float !=
@@ -771,7 +771,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: state
             entity_id: sensor.home_energy_meter_power
             state:
@@ -834,12 +834,12 @@ actions:
                          != is_state('sensor.zendure_pv_export_mode', 'Forbidden') }}
                   - condition: trigger
                     id:
-                      - control_trigger
+                      - aansturing_trigger
         sequence:
           - data:
               sn: "{{ states('sensor.zendure_serial_number') }}"
-              setting_item: gridReverse
-              setting_value: >-
+              instellingitem: gridReverse
+              instellinginhoud: >-
                 {{ 2 if
                 is_state('input_boolean.zendure_setting_pv_export_disabled',
                 'on')
@@ -891,7 +891,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: state
             entity_id: input_select.zendure_operation_mode
             state:
@@ -918,7 +918,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - alias: >-
               sensor.home_energy_meter_power bigger then
               input_number.zendure_setting_start_discharging_at
@@ -1015,35 +1015,35 @@ actions:
               outputLimit: >-
                 {% set factor = 0.75 %}  {% set cap =
                 states('input_number.zendure_setting_max_discharge_power') |
-                float(0) %} {% set adjustment = -1 *
+                float(0) %} {% set correctie = -1 *
                 (states('input_number.zendure_setting_discharge_buffer') |
                 float(0)) %} {% set p1 =
                 states('sensor.home_energy_meter_power') | float(0) %}  {% set
                 zendure = states('sensor.zendure_power') | float(0) %}
 
-                {% set total = (p1 - zendure - adjustment) * factor %} {% set
-                limited = [ [total, 0] | max, cap ] | min %}
+                {% set totaal = (p1 - zendure - correctie) * factor %} {% set
+                beperkt = [ [totaal, 0] | max, cap ] | min %}
 
-                {{ limited | int }}
+                {{ beperkt | int }}
             action: rest_command.zendure_x_discharge
           - action: logbook.log
             data:
               message: |
                 🔋Discharging (Starting) — Power set to {% set factor = 0.75 %} 
                   {% set cap = states('input_number.zendure_setting_max_discharge_power') | float(0) %}
-                  {% set adjustment = -1 * (states('input_number.zendure_setting_discharge_buffer') | float(0)) %}
+                  {% set correctie = -1 * (states('input_number.zendure_setting_discharge_buffer') | float(0)) %}
                   {% set p1 = states('sensor.home_energy_meter_power') | float(0) %} 
                   {% set zendure = states('sensor.zendure_power') | float(0) %}
 
-                  {% set total = (p1 - zendure - adjustment) * factor %} {% set limited = [
-                  [total, 0] | max, cap ] | min %} {{ limited | int }} watt —
+                  {% set totaal = (p1 - zendure - correctie) * factor %} {% set beperkt = [
+                  [totaal, 0] | max, cap ] | min %} {{ beperkt | int }} watt —
               entity_id: input_select.zendure_operation_mode
               name: " "
         alias: Start discharging at +xxx watt (75% of demand)
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: state
             entity_id: sensor.zendure_soc_limit_status
             state:
@@ -1060,7 +1060,7 @@ actions:
             condition: template
             value_template: |-
               {% set factor = 1.00 %} {% set cap =
-                states('input_number.zendure_setting_max_discharge_power') | float(0) %} {% set adjustment = -1 * (states('input_number.zendure_setting_discharge_buffer') | float(0)) %} {% set p1 = states('sensor.home_energy_meter_power') | float(0) %} {% set zendure = states('sensor.zendure_power') | float(0) %} {% set total = (p1 - zendure - adjustment) * factor %} {% set limited = [ [total, 0] | max, cap ] | min %} {% set target = limited | int %} {% set current = states('sensor.zendure_set_discharge_power') | int(0) %} {{ current != target }}
+                states('input_number.zendure_setting_max_discharge_power') | float(0) %} {% set correctie = -1 * (states('input_number.zendure_setting_discharge_buffer') | float(0)) %} {% set p1 = states('sensor.home_energy_meter_power') | float(0) %} {% set zendure = states('sensor.zendure_power') | float(0) %} {% set totaal = (p1 - zendure - correctie) * factor %} {% set beperkt = [ [totaal, 0] | max, cap ] | min %} {% set target = beperkt | int %} {% set huidig = states('sensor.zendure_set_discharge_power') | int(0) %} {{ huidig != target }}
           - condition: numeric_state
             entity_id: sensor.zendure_power
             below: 0
@@ -1123,14 +1123,14 @@ actions:
               outputLimit: >-
                 {% set factor = 1.00 %}  {% set cap =
                 states('input_number.zendure_setting_max_discharge_power') |
-                float(0) %} {% set adjustment = -1 *
+                float(0) %} {% set correctie = -1 *
                 (states('input_number.zendure_setting_discharge_buffer') |
                 float(0)) %} {% set p1 =
                 states('sensor.home_energy_meter_power') | float(0) %}  {% set
                 zendure = states('sensor.zendure_power') | float(0) %}
 
-                {% set total = (p1 - zendure - adjustment) * factor %} {% set
-                limited = [ [total, 0] | max, cap ] | min %} {{ limited | int
+                {% set totaal = (p1 - zendure - correctie) * factor %} {% set
+                beperkt = [ [totaal, 0] | max, cap ] | min %} {{ beperkt | int
                 }}
             action: rest_command.zendure_x_discharge_balancing
           - action: logbook.log
@@ -1138,19 +1138,19 @@ actions:
               message: |
                 ⚡Discharging (Balancing) — Power set to {% set factor = 1.00 %} 
                   {% set cap = states('input_number.zendure_setting_max_discharge_power') | float(0) %}
-                  {% set adjustment = -1 * (states('input_number.zendure_setting_discharge_buffer') | float(0)) %}
+                  {% set correctie = -1 * (states('input_number.zendure_setting_discharge_buffer') | float(0)) %}
                   {% set p1 = states('sensor.home_energy_meter_power') | float(0) %} 
                   {% set zendure = states('sensor.zendure_power') | float(0) %}
 
-                  {% set total = (p1 - zendure - adjustment) * factor %} {% set limited = [
-                  [total, 0] | max, cap ] | min %} {{ limited | int }} watt —
+                  {% set totaal = (p1 - zendure - correctie) * factor %} {% set beperkt = [
+                  [totaal, 0] | max, cap ] | min %} {{ beperkt | int }} watt —
               entity_id: input_select.zendure_operation_mode
               name: " "
         alias: During discharge balance to +xxx watt (100% of the demand)
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: state
             entity_id: sensor.zendure_soc_limit_status
             state:
@@ -1244,13 +1244,13 @@ actions:
               inputLimit: >-
                 {% set factor = 0.75 %} {% set cap =
                 states('input_number.zendure_setting_max_charge_power') |
-                float(0) %} {% set export_adjustment =
+                float(0) %} {% set correctie_export =
                 states('input_number.zendure_setting_charge_buffer') | float(0)
                 %} {% set p1 = states('sensor.home_energy_meter_power') |
                 float(0) %} {% set zendure = states('sensor.zendure_power') |
-                float(0) %} {% set difference = zendure - p1 - export_adjustment %}
-                {% set limited = difference * factor if difference > 0 else 0 %} {%
-                set limited = limited if limited < cap else cap %} {{ limited |
+                float(0) %} {% set verschil = zendure - p1 - correctie_export %}
+                {% set beperkt = verschil * factor if verschil > 0 else 0 %} {%
+                set beperkt = beperkt if beperkt < cap else cap %} {{ beperkt |
                 int }}
             action: rest_command.zendure_x_charge
           - action: logbook.log
@@ -1258,20 +1258,20 @@ actions:
               message: |
                 🔋Charging (Starting) — Power set to {% set factor = 0.75 %}
                   {% set cap = states('input_number.zendure_setting_max_charge_power') | float(0) %}
-                  {% set export_adjustment = states('input_number.zendure_setting_charge_buffer') | float(0) %}
+                  {% set correctie_export = states('input_number.zendure_setting_charge_buffer') | float(0) %}
                   {% set p1 = states('sensor.home_energy_meter_power') | float(0) %}
                   {% set zendure = states('sensor.zendure_power') | float(0) %}
-                  {% set difference = zendure - p1 - export_adjustment %}
-                  {% set limited = difference * factor if difference > 0 else 0 %}
-                  {% set limited = limited if limited < cap else cap %}
-                  {{ limited | int }} watt —
+                  {% set verschil = zendure - p1 - correctie_export %}
+                  {% set beperkt = verschil * factor if verschil > 0 else 0 %}
+                  {% set beperkt = beperkt if beperkt < cap else cap %}
+                  {{ beperkt | int }} watt —
               entity_id: input_select.zendure_operation_mode
               name: " "
         alias: " Start charging at -xxx watt (75% of demand)"
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: state
             entity_id: sensor.zendure_soc_limit_status
             state:
@@ -1282,7 +1282,7 @@ actions:
             condition: template
             value_template: |-
               {% set factor = 1.00 %} {% set cap =
-                states('input_number.zendure_setting_max_charge_power') | float(0) %} {% set export_adjustment = states('input_number.zendure_setting_charge_buffer') | float(0) %} {% set p1 = states('sensor.home_energy_meter_power') | float(0) %} {% set zendure = states('sensor.zendure_power') | float(0) %} {% set difference = (zendure - p1 - export_adjustment) * factor %} {% set limited = [ [difference, 0] | max, cap ] | min %} {% set target = limited | int %} {% set current = states('sensor.zendure_set_charge_power') | int(0) %} {{ current != target }}
+                states('input_number.zendure_setting_max_charge_power') | float(0) %} {% set correctie_export = states('input_number.zendure_setting_charge_buffer') | float(0) %} {% set p1 = states('sensor.home_energy_meter_power') | float(0) %} {% set zendure = states('sensor.zendure_power') | float(0) %} {% set verschil = (zendure - p1 - correctie_export) * factor %} {% set beperkt = [ [verschil, 0] | max, cap ] | min %} {% set target = beperkt | int %} {% set huidig = states('sensor.zendure_set_charge_power') | int(0) %} {{ huidig != target }}
           - alias: Below the configured maximum SOC
             condition: template
             value_template: |2-
@@ -1347,13 +1347,13 @@ actions:
               inputLimit: >-
                 {% set factor = 1.00 %}{% set cap =
                 states('input_number.zendure_setting_max_charge_power') |
-                float(0) %} {% set export_adjustment =
+                float(0) %} {% set correctie_export =
                 states('input_number.zendure_setting_charge_buffer') | float(0)
                 %} {% set p1 = states('sensor.home_energy_meter_power') |
                 float(0) %} {% set zendure = states('sensor.zendure_power') |
-                float(0) %} {% set difference = zendure - p1 - export_adjustment %}
-                {% set limited = difference * factor if difference > 0 else 0 %} {%
-                set limited = limited if limited < cap else cap %} {{ limited |
+                float(0) %} {% set verschil = zendure - p1 - correctie_export %}
+                {% set beperkt = verschil * factor if verschil > 0 else 0 %} {%
+                set beperkt = beperkt if beperkt < cap else cap %} {{ beperkt |
                 int }}
             action: rest_command.zendure_x_charge_balancing
           - action: logbook.log
@@ -1361,13 +1361,13 @@ actions:
               message: |
                 ⚡Charging (Balancing) — Power set to {% set factor = 1.00 %}
                   {% set cap = states('input_number.zendure_setting_max_charge_power') | float(0) %}
-                  {% set export_adjustment = states('input_number.zendure_setting_charge_buffer') | float(0) %}
+                  {% set correctie_export = states('input_number.zendure_setting_charge_buffer') | float(0) %}
                   {% set p1 = states('sensor.home_energy_meter_power') | float(0) %}
                   {% set zendure = states('sensor.zendure_power') | float(0) %}
-                  {% set difference = zendure - p1 - export_adjustment %}
-                  {% set limited = difference * factor if difference > 0 else 0 %}
-                  {% set limited = limited if limited < cap else cap %}
-                  {{ limited | int }} watt —
+                  {% set verschil = zendure - p1 - correctie_export %}
+                  {% set beperkt = verschil * factor if verschil > 0 else 0 %}
+                  {% set beperkt = beperkt if beperkt < cap else cap %}
+                  {{ beperkt | int }} watt —
               entity_id: input_select.zendure_operation_mode
               name: " "
         alias: During charging balance to -xxx watt (100% of the demand)
@@ -1376,12 +1376,12 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: or
             conditions:
               - condition: trigger
                 id:
-                  - control_trigger
+                  - aansturing_trigger
           - condition: state
             entity_id: input_select.zendure_operation_mode
             state:
@@ -1410,12 +1410,12 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: or
             conditions:
               - condition: trigger
                 id:
-                  - control_trigger
+                  - aansturing_trigger
           - condition: state
             entity_id: input_select.zendure_operation_mode
             state:
@@ -1446,7 +1446,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - dynamic_midnight
+              - dynamisch_middernacht
           - condition: template
             value_template: >-
               {{
@@ -1492,9 +1492,9 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - mode_dynamic_cheap
-              - mode_dynamic_expensive
-              - mode_dynamic_spread
+              - modus_dynamisch_goedkoop
+              - modus_dynamisch_duur
+              - modus_dynamisch_spread
           - condition: template
             value_template: >-
               {{
@@ -1542,7 +1542,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: template
             value_template: >-
               {{
@@ -1583,7 +1583,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: template
             value_template: >-
               {{
@@ -1691,7 +1691,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: template
             value_template: >-
               {{
@@ -1810,7 +1810,7 @@ actions:
       - conditions:
           - condition: trigger
             id:
-              - control_trigger
+              - aansturing_trigger
           - condition: template
             value_template: >-
               {{
@@ -1866,37 +1866,50 @@ actions:
               minutes: 0
               seconds: 5
               milliseconds: 0
-          - action: rest_command.zendure_quick_discharge
-            data:
-              sn: "{{ states('sensor.zendure_serial_number') }}"
-              outputLimit: >-
-                {{ states('input_number.zendure_setting_max_discharge_power') |
-                int }}
-          - action: logbook.log
-            data:
-              message: 💲Dynamic expensive discharge started —
-              entity_id: input_select.zendure_operation_mode
-              name: " "
-          - wait_for_trigger:
-              - alias: Soft discharge SOC limit
-                trigger: state
+          - if:
+              - condition: state
                 entity_id: binary_sensor.zendure_automatic_discharge_allowed
-                to: "off"
-              - entity_id:
-                  - sensor.dynamic_highest_price_period
-                to:
-                  - "No"
-                trigger: state
-              - trigger: state
-                entity_id:
-                  - input_select.zendure_operation_mode
-              - trigger: state
-                entity_id:
-                  - input_number.dynamic_setting_minimal_spread
-              - trigger: state
-                entity_id:
-                  - sensor.dynamic_spread_indication
-            continue_on_timeout: false
+                state: "on"
+            then:
+              - action: rest_command.zendure_quick_discharge
+                data:
+                  sn: "{{ states('sensor.zendure_serial_number') }}"
+                  outputLimit: >-
+                    {{ states('input_number.zendure_setting_max_discharge_power') |
+                    int }}
+              - action: logbook.log
+                data:
+                  message: 💲Dynamic expensive discharge started —
+                  entity_id: input_select.zendure_operation_mode
+                  name: " "
+              - repeat:
+                  sequence:
+                    - wait_for_trigger:
+                        - alias: Soft discharge SOC limit
+                          trigger: state
+                          entity_id: binary_sensor.zendure_automatic_discharge_allowed
+                          to: "off"
+                        - entity_id:
+                            - sensor.dynamic_highest_price_period
+                          to:
+                            - "No"
+                          trigger: state
+                        - trigger: state
+                          entity_id:
+                            - input_select.zendure_operation_mode
+                        - trigger: state
+                          entity_id:
+                            - input_number.dynamic_setting_minimal_spread
+                        - trigger: state
+                          entity_id:
+                            - sensor.dynamic_spread_indication
+                      timeout: "00:00:05"
+                      continue_on_timeout: true
+                  until:
+                    - condition: template
+                      value_template: >-
+                        {{ wait.trigger is not none or
+                           not is_state('binary_sensor.zendure_automatic_discharge_allowed', 'on') }}
           - action: input_boolean.turn_off
             target:
               entity_id:
