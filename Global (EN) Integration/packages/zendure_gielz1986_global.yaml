@@ -509,8 +509,8 @@ template:
               {% set nu = now() %}
               {% if raw %}
                 {% set current_hour_values = raw 
-                  | selectattr('start', '>=', nu.replace(minute=0, second=0, microsecond=0)) 
-                  | selectattr('start', '<', nu.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)) 
+                  | selectattr('start', '>=', nu.replace(minute=0, second=0, microsecond=0))
+                  | selectattr('start', '<', nu.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1))
                   | map(attribute='value') 
                   | list %}
                 {% if current_hour_values %}
