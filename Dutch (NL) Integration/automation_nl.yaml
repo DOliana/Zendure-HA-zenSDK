@@ -194,6 +194,11 @@ actions:
             entity_id: input_select.zendure_2400_ac_modus_selecteren
             state:
               - Snel ontladen
+          - condition: template
+            value_template: >-
+              {{ states('sensor.zendure_2400_ac_laadpercentage') | float(0) >
+                 [states('sensor.zendure_2400_ac_minimale_laadpercentage') | float(0),
+                  states('input_number.zendure_2400_ac_zachte_ontlaadgrens') | float(5)] | max }}
         sequence:
           - action: rest_command.zendure_snel_ontladen
             data:
@@ -898,6 +903,35 @@ actions:
           - condition: trigger
             id:
               - aansturing_trigger
+          - condition: state
+            entity_id: input_select.zendure_2400_ac_modus_selecteren
+            state:
+              - Snel ontladen
+              - Nul op de meter
+              - Alleen slim ontladen
+              - Dynamisch NOM
+              - Dynamisch NOM (Duur)
+              - Dynamisch Handelen + NOM
+          - condition: state
+            entity_id: input_boolean.dynamisch_ontladen_loopt
+            state: "off"
+          - condition: numeric_state
+            entity_id: sensor.zendure_2400_ac_vermogen_aansturing
+            below: 0
+          - condition: template
+            value_template: >-
+              {{ states('sensor.zendure_2400_ac_laadpercentage') | float(0) <=
+                 [states('sensor.zendure_2400_ac_minimale_laadpercentage') | float(0),
+                  states('input_number.zendure_2400_ac_zachte_ontlaadgrens') | float(5)] | max }}
+        sequence:
+          - action: rest_command.zendure_stop_met_alles
+            data:
+              sn: "{{ states('sensor.zendure_2400_ac_serienummer') }}"
+        alias: Stop automatisch ontladen bij zachte ontlaadgrens
+      - conditions:
+          - condition: trigger
+            id:
+              - aansturing_trigger
           - alias: >-
               sensor.p1_aansturing_vermogen groter dan
               input_number.zendure_2400_ac_start_ontladen_bij
@@ -911,11 +945,12 @@ actions:
               - Normale werking
               - Laadlimiet bereikt
               - unknown
-          - alias: Tot de minimaal ingestelde SOC
+          - alias: Boven de zachte ontlaadgrens
             condition: template
             value_template: |
-              {{ states('sensor.zendure_2400_ac_laadpercentage') | float >
-               states('sensor.zendure_2400_ac_minimale_laadpercentage') | float }}
+              {{ states('sensor.zendure_2400_ac_laadpercentage') | float(0) >
+                 [states('sensor.zendure_2400_ac_minimale_laadpercentage') | float(0),
+                  states('input_number.zendure_2400_ac_zachte_ontlaadgrens') | float(5)] | max }}
           - condition: numeric_state
             entity_id: sensor.zendure_2400_ac_vermogen_aansturing
             above: -30
@@ -1032,11 +1067,12 @@ actions:
               - Normale werking
               - Laadlimiet bereikt
               - unknown
-          - alias: Tot de minimaal ingestelde SOC
+          - alias: Boven de zachte ontlaadgrens
             condition: template
             value_template: |
-              {{ states('sensor.zendure_2400_ac_laadpercentage') | float >
-               states('sensor.zendure_2400_ac_minimale_laadpercentage') | float }}
+              {{ states('sensor.zendure_2400_ac_laadpercentage') | float(0) >
+                 [states('sensor.zendure_2400_ac_minimale_laadpercentage') | float(0),
+                  states('input_number.zendure_2400_ac_zachte_ontlaadgrens') | float(5)] | max }}
           - alias: >-
               Nieuw in te stellen vermogen is anders dan huidig batterij
               vermogen
@@ -1830,11 +1866,12 @@ actions:
               - Normale werking
               - Laadlimiet bereikt
               - unknown
-          - alias: Tot de minimaal ingestelde SOC
+          - alias: Boven de zachte ontlaadgrens
             condition: template
             value_template: |
-              {{ states('sensor.zendure_2400_ac_laadpercentage') | float >
-               states('sensor.zendure_2400_ac_minimale_laadpercentage') | float }}
+              {{ states('sensor.zendure_2400_ac_laadpercentage') | float(0) >
+                 [states('sensor.zendure_2400_ac_minimale_laadpercentage') | float(0),
+                  states('input_number.zendure_2400_ac_zachte_ontlaadgrens') | float(5)] | max }}
           - condition: state
             entity_id: sensor.dynamisch_duurste_periode
             state:
@@ -1876,15 +1913,12 @@ actions:
               entity_id: input_select.zendure_2400_ac_modus_selecteren
               name: " "
           - wait_for_trigger:
-              - alias: Tot minimale SOC
+              - alias: Zachte ontlaadgrens
                 trigger: template
                 value_template: |-
-                  {{ states('sensor.zendure_2400_ac_laadpercentage') | float <=
-                     states('sensor.zendure_2400_ac_minimale_laadpercentage') | float }}
-                for:
-                  hours: 0
-                  minutes: 0
-                  seconds: 15
+                  {{ states('sensor.zendure_2400_ac_laadpercentage') | float(0) <=
+                     [states('sensor.zendure_2400_ac_minimale_laadpercentage') | float(0),
+                      states('input_number.zendure_2400_ac_zachte_ontlaadgrens') | float(5)] | max }}
               - entity_id:
                   - sensor.dynamisch_duurste_periode
                 to:

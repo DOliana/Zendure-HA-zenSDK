@@ -195,6 +195,11 @@ actions:
             entity_id: input_select.zendure_operation_mode
             state:
               - Quick Discharge
+          - condition: template
+            value_template: >-
+              {{ states('sensor.zendure_total_state_of_charge') | float(0) >
+                 [states('sensor.zendure_minimum_state_of_charge') | float(0),
+                  states('input_number.zendure_setting_soft_discharge_state_of_charge') | float(5)] | max }}
         sequence:
           - action: rest_command.zendure_quick_discharge
             data:
@@ -886,6 +891,35 @@ actions:
           - condition: trigger
             id:
               - aansturing_trigger
+          - condition: state
+            entity_id: input_select.zendure_operation_mode
+            state:
+              - Quick Discharge
+              - Smart Matching
+              - Smart Discharge Only
+              - Dynamic Smart Matching
+              - Dynamic Smart Matching (Expensive)
+              - Dynamic Trading + Smart Matching
+          - condition: state
+            entity_id: input_boolean.dynamic_discharging_running
+            state: "off"
+          - condition: numeric_state
+            entity_id: sensor.zendure_power
+            below: 0
+          - condition: template
+            value_template: >-
+              {{ states('sensor.zendure_total_state_of_charge') | float(0) <=
+                 [states('sensor.zendure_minimum_state_of_charge') | float(0),
+                  states('input_number.zendure_setting_soft_discharge_state_of_charge') | float(5)] | max }}
+        sequence:
+          - action: rest_command.zendure_stop_with_everything
+            data:
+              sn: "{{ states('sensor.zendure_serial_number') }}"
+        alias: Stop automatic discharge at soft SOC limit
+      - conditions:
+          - condition: trigger
+            id:
+              - aansturing_trigger
           - alias: >-
               sensor.home_energy_meter_power bigger then
               input_number.zendure_setting_start_discharging_at
@@ -899,11 +933,12 @@ actions:
               - Normal Operation
               - Charging Limit Reached
               - unknown
-          - alias: Down to the minimum configured SOC
+          - alias: Above the soft discharge SOC limit
             condition: template
             value_template: |
-              {{ states('sensor.zendure_total_state_of_charge') | float >
-               states('sensor.zendure_minimum_state_of_charge') | float }}
+              {{ states('sensor.zendure_total_state_of_charge') | float(0) >
+                 [states('sensor.zendure_minimum_state_of_charge') | float(0),
+                  states('input_number.zendure_setting_soft_discharge_state_of_charge') | float(5)] | max }}
           - condition: numeric_state
             entity_id: sensor.zendure_power
             above: -30
@@ -1018,11 +1053,12 @@ actions:
               - Normal Operation
               - Charging Limit Reached
               - unknown
-          - alias: Down to the minimum configured SOC
+          - alias: Above the soft discharge SOC limit
             condition: template
             value_template: |
-              {{ states('sensor.zendure_total_state_of_charge') | float >
-               states('sensor.zendure_minimum_state_of_charge') | float }}
+              {{ states('sensor.zendure_total_state_of_charge') | float(0) >
+                 [states('sensor.zendure_minimum_state_of_charge') | float(0),
+                  states('input_number.zendure_setting_soft_discharge_state_of_charge') | float(5)] | max }}
           - alias: >-
               The new power to be set is different from the current battery
               power
@@ -1804,11 +1840,12 @@ actions:
               - Normal Operation
               - Charging Limit Reached
               - unknown
-          - alias: Up to the minimum configured SOC
+          - alias: Above the soft discharge SOC limit
             condition: template
             value_template: |
-              {{ states('sensor.zendure_total_state_of_charge') | float >
-               states('sensor.zendure_minimum_state_of_charge') | float }}
+              {{ states('sensor.zendure_total_state_of_charge') | float(0) >
+                 [states('sensor.zendure_minimum_state_of_charge') | float(0),
+                  states('input_number.zendure_setting_soft_discharge_state_of_charge') | float(5)] | max }}
           - condition: state
             entity_id: sensor.dynamic_highest_price_period
             state:
@@ -1850,15 +1887,12 @@ actions:
               entity_id: input_select.zendure_operation_mode
               name: " "
           - wait_for_trigger:
-              - alias: Tot minimale SOC
+              - alias: Soft discharge SOC limit
                 trigger: template
                 value_template: |-
-                  {{ states('sensor.zendure_total_state_of_charge') | float <=
-                     states('sensor.zendure_minimum_state_of_charge') | float }}
-                for:
-                  hours: 0
-                  minutes: 0
-                  seconds: 15
+                  {{ states('sensor.zendure_total_state_of_charge') | float(0) <=
+                     [states('sensor.zendure_minimum_state_of_charge') | float(0),
+                      states('input_number.zendure_setting_soft_discharge_state_of_charge') | float(5)] | max }}
               - entity_id:
                   - sensor.dynamic_highest_price_period
                 to:
