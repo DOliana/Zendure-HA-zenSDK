@@ -1153,39 +1153,39 @@ views:
 
 
                   return data.map((item, index) => {
-                    const tijdStart = new Date(item.start).getTime();
+                    const startTime = new Date(item.start).getTime();
                     const duration = item.duration
                                       ? item.duration * 1000
                                       : (data[index + 1]
-                                          ? new Date(data[index + 1].start).getTime() - tijdStart
+                                          ? new Date(data[index + 1].start).getTime() - startTime
                                           : 3600000);
-                    const tijdEind = tijdStart + duration;
+                    const endTime = startTime + duration;
 
-                    let prijs = item.value;
+                    let price = item.value;
 
                     if (item.duur === "Yes") {
-                      prijs = prijs - correction;
+                      price = price - correction;
                     }
 
-                    const verleden = Date.now() >= tijdEind;  // only fully elapsed periods
+                    const elapsed = Date.now() >= endTime;  // only fully elapsed periods
 
                     // Default color: #e0e0e3
-                    let kleur = "rgba(224,224,227,1)";
+                    let color = "rgba(224,224,227,1)";
 
                     if (item.goedkoop === "Yes") {
-                      kleur = verleden ? "rgba(1,161,128,0.15)" : "rgba(1,161,128,1)";
+                      color = elapsed ? "rgba(1,161,128,0.15)" : "rgba(1,161,128,1)";
                     }
                     else if (item.duur === "Yes") {
-                      kleur = verleden ? "rgba(197,59,44,0.15)" : "rgba(197,59,44,1)";
+                      color = elapsed ? "rgba(197,59,44,0.15)" : "rgba(197,59,44,1)";
                     }
                     else {
-                      kleur = verleden ? "rgba(162,162,163,0.15)" : "rgba(162,162,163,1)";
+                      color = elapsed ? "rgba(162,162,163,0.15)" : "rgba(162,162,163,1)";
                     }
 
                     return {
-                      x: tijdStart,
-                      y: prijs,
-                      fillColor: kleur
+                      x: startTime,
+                      y: price,
+                      fillColor: color
                     };
                   });
           - type: horizontal-stack
@@ -1308,39 +1308,39 @@ views:
 
 
                   return data.map((item, index) => {
-                    const tijdStart = new Date(item.start).getTime();
+                    const startTime = new Date(item.start).getTime();
                     const duration = item.duration
                                       ? item.duration * 1000
                                       : (data[index + 1]
-                                          ? new Date(data[index + 1].start).getTime() - tijdStart
+                                          ? new Date(data[index + 1].start).getTime() - startTime
                                           : 3600000);
-                    const tijdEind = tijdStart + duration;
+                    const endTime = startTime + duration;
 
-                    let prijs = item.value;
+                    let price = item.value;
 
                     if (item.duur === "Yes") {
-                      prijs = prijs - correction;
+                      price = price - correction;
                     }
 
-                    const verleden = Date.now() >= tijdEind;  // only fully elapsed periods
+                    const elapsed = Date.now() >= endTime;  // only fully elapsed periods
 
                     // Default color: #e0e0e3
-                    let kleur = "rgba(224,224,227,1)";
+                    let color = "rgba(224,224,227,1)";
 
                     if (item.goedkoop === "Yes") {
-                      kleur = verleden ? "rgba(1,161,128,0.15)" : "rgba(1,161,128,1)";
+                      color = elapsed ? "rgba(1,161,128,0.15)" : "rgba(1,161,128,1)";
                     }
                     else if (item.duur === "Yes") {
-                      kleur = verleden ? "rgba(197,59,44,0.15)" : "rgba(197,59,44,1)";
+                      color = elapsed ? "rgba(197,59,44,0.15)" : "rgba(197,59,44,1)";
                     }
                     else {
-                      kleur = verleden ? "rgba(162,162,163,0.15)" : "rgba(162,162,163,1)";
+                      color = elapsed ? "rgba(162,162,163,0.15)" : "rgba(162,162,163,1)";
                     }
 
                     return {
-                      x: tijdStart,
-                      y: prijs,
-                      fillColor: kleur
+                      x: startTime,
+                      y: price,
+                      fillColor: color
                     };
                   });
             visibility:
