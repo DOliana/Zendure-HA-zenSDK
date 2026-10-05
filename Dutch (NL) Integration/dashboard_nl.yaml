@@ -2805,6 +2805,11 @@ views:
               zakt zal er niet meer automatisch bijgeladen worden. Er word
               gewacht tot de BMS (batterij management systeem) zelf actie
               onderneemt.
+
+
+              De zachte ontlaadgrens stopt automatisch ontladen eerder dan de
+              minimale laadgrens. Stel bijvoorbeeld 15% in bij een minimale
+              laadgrens van 10% om ruimte te laten voor zelfontlading.
             text_only: true
             visibility:
               - condition: state
@@ -2817,6 +2822,8 @@ views:
               - entity: >-
                   input_number.zendure_2400_ac_minimaal_toegestaan_laadpercentage
                 name: Min. Laadpercentage
+              - entity: input_number.zendure_2400_ac_zachte_ontlaadgrens
+                name: Zachte Ontlaadgrens
               - entity: >-
                   input_number.zendure_2400_ac_maximaal_toegestaan_laadpercentage
                 name: Max. Laadpercentage

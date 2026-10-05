@@ -232,6 +232,15 @@ input_number:
     unit_of_measurement: '%'
     mode: box
 
+  zendure_2400_ac_zachte_ontlaadgrens:
+    name: Zendure 2400 AC Zachte Ontlaadgrens
+    icon: mdi:battery-arrow-down
+    min: 5
+    max: 100
+    step: 1
+    unit_of_measurement: '%'
+    mode: box
+
   zendure_2400_ac_maximaal_toegestaan_laadpercentage:
     name: Zendure 2400 AC Maximaal Toegestaan Laadpercentage
     icon: mdi:percent-box

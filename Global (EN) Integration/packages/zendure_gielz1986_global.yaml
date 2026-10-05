@@ -232,6 +232,15 @@ input_number:
     unit_of_measurement: '%'
     mode: box
 
+  zendure_setting_soft_discharge_state_of_charge:
+    name: Zendure Soft Discharge State Of Charge
+    icon: mdi:battery-arrow-down
+    min: 5
+    max: 100
+    step: 1
+    unit_of_measurement: '%'
+    mode: box
+
   zendure_setting_maximum_allowed_state_of_charge:
     name: Zendure Maximum Allowed State Of Charge
     icon: mdi:percent-box

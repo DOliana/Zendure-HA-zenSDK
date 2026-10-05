@@ -2785,6 +2785,11 @@ views:
               the battery drops below the minimum allowed charge level, it will
               no longer be automatically recharged. The system will wait until
               the BMS (Battery Management System) takes action.
+
+
+              The soft discharge limit stops automatic discharging above the
+              device minimum. For example, use 15% with a 10% device minimum
+              to leave 5% for battery self-discharge.
             text_only: true
             visibility:
               - condition: state
@@ -2806,6 +2811,8 @@ views:
                 name: SOC Protection Disabled
               - entity: input_number.zendure_setting_minimum_allowed_state_of_charge
                 name: Min. State Of Charge
+              - entity: input_number.zendure_setting_soft_discharge_state_of_charge
+                name: Soft Discharge Limit
               - entity: input_number.zendure_setting_maximum_allowed_state_of_charge
                 name: Max. State Of Charge
           - type: heading
