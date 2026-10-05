@@ -241,7 +241,7 @@ views:
                 offsetY: 17
                 formatter: |
                   EVAL:function(seriesName, opts) {
-                    // filter series die niet in de legenda moeten
+                    // filter series that should not appear in the legend
                     if(seriesName === "State Of Charge" || seriesName === "Leeg") return "";
                     return seriesName;
                   }
@@ -420,7 +420,7 @@ views:
                 offsetY: 17
                 formatter: |
                   EVAL:function(seriesName, opts) {
-                    // filter series die niet in de legenda moeten
+                    // filter series that should not appear in the legend
                     if(seriesName === "State Of Charge" || seriesName === "Leeg") return "";
                     return seriesName;
                   }
@@ -559,7 +559,7 @@ views:
                 offsetY: 17
                 formatter: |
                   EVAL:function(seriesName, opts) {
-                    // filter series die niet in de legenda moeten
+                    // filter series that should not appear in the legend
                     if(seriesName === "Leeg" || seriesName === "Leeg") return "";
                     return seriesName;
                   }
@@ -754,7 +754,7 @@ views:
                 offsetY: 17
                 formatter: |
                   EVAL:function(seriesName, opts) {
-                    // filter series die niet in de legenda moeten
+                    // filter series that should not appear in the legend
                     if(seriesName === "To Battery" || seriesName === "To Home") return "";
                     return seriesName;
                   }
@@ -1167,9 +1167,9 @@ views:
                       prijs = prijs - correction;
                     }
 
-                    const verleden = Date.now() >= tijdEind;  // alleen volledig verlopen blokken
+                    const verleden = Date.now() >= tijdEind;  // only fully elapsed periods
 
-                    // Standaardkleur: #e0e0e3
+                    // Default color: #e0e0e3
                     let kleur = "rgba(224,224,227,1)";
 
                     if (item.goedkoop === "Yes") {
@@ -1322,9 +1322,9 @@ views:
                       prijs = prijs - correction;
                     }
 
-                    const verleden = Date.now() >= tijdEind;  // alleen volledig verlopen blokken
+                    const verleden = Date.now() >= tijdEind;  // only fully elapsed periods
 
-                    // Standaardkleur: #e0e0e3
+                    // Default color: #e0e0e3
                     let kleur = "rgba(224,224,227,1)";
 
                     if (item.goedkoop === "Yes") {
@@ -2380,7 +2380,7 @@ views:
                     offsetY: 17
                     formatter: |
                       EVAL:function(seriesName, opts) {
-                        // filter series die niet in de legenda moeten
+                        // filter series that should not appear in the legend
                         if(seriesName === "leeg" || seriesName === "P1 (NOM Doel)") return "";
                         return seriesName;
                       }
