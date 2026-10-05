@@ -351,6 +351,13 @@ utility_meter:
 
 template:
   - binary_sensor:
+      - name: "Zendure 2400 AC Automatisch Ontladen Toegestaan"
+        unique_id: zendure_2400_ac_automatisch_ontladen_toegestaan
+        state: >
+          {{ states('sensor.zendure_2400_ac_laadpercentage') | float(0) >
+             [states('sensor.zendure_2400_ac_minimale_laadpercentage') | float(0),
+              states('input_number.zendure_2400_ac_zachte_ontlaadgrens') | float(5)] | max }}
+
       - name: "P1 Nul Import Actief"
         unique_id: p1_nul_import_actief
         device_class: power

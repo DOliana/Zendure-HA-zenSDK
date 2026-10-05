@@ -351,6 +351,13 @@ utility_meter:
 
 template:
   - binary_sensor:
+      - name: "Zendure Automatic Discharge Allowed"
+        unique_id: zendure_automatic_discharge_allowed
+        state: >
+          {{ states('sensor.zendure_total_state_of_charge') | float(0) >
+             [states('sensor.zendure_minimum_state_of_charge') | float(0),
+              states('input_number.zendure_setting_soft_discharge_state_of_charge') | float(5)] | max }}
+
       - name: "Home Energy Zero Import Active"
         unique_id: home_energy_zero_import_active
         device_class: power

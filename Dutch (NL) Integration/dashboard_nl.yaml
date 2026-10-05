@@ -2807,9 +2807,10 @@ views:
               onderneemt.
 
 
-              De zachte ontlaadgrens stopt automatisch ontladen eerder dan de
-              minimale laadgrens. Stel bijvoorbeeld 15% in bij een minimale
-              laadgrens van 10% om ruimte te laten voor zelfontlading.
+              De zachte ontlaadgrens stopt automatisch ontladen boven de
+              minimale laadgrens, zodat zelfontlading niet onnodig bijladen
+              vanuit het net veroorzaakt. Bijvoorbeeld: 15% bij een minimale
+              laadgrens van 10% laat 5% marge.
             text_only: true
             visibility:
               - condition: state

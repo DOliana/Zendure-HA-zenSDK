@@ -80,7 +80,7 @@ homeassistant:
 | **Configuration (State Of Charge)** |**Information**|  
 | `zendure_setting_soc_protection_disabled`    | Check this to disable the dual SOC protection. When the battery drops below the minimum allowed charge percentage, it will no longer automatically recharge. It will wait until the BMS (Battery Management System) takes action. |  
 | `zendure_setting_minimum_allowed_state_of_charge` | **(Recommended: 10%) 5% to 50%** – Set the minimum allowed state of charge percentage here. | 
-| `zendure_setting_soft_discharge_state_of_charge` | **5% to 100%** – Stop automatic discharging at this SOC without changing the device's minimum or grid-recharge protection. Set 15% with a 10% device minimum to leave 5% for self-discharge. The higher of the two limits applies; 5% preserves the previous behavior for all supported device minimums. Manual discharge is unaffected. |
+| `zendure_setting_soft_discharge_state_of_charge` | **5% to 100%** – Stop automatic discharging above the device minimum so self-discharge does not unnecessarily trigger recharging from the grid. For example, 15% with a 10% device minimum leaves a 5% margin. The higher limit applies; setting this to 5% preserves the previous behavior. Manual discharge is unaffected. |
 | `zendure_setting_maximum_allowed_state_of_charge` | **(Recommended: 100%) 70% to 100%** – Set the maximum allowed state of charge percentage here. At 100%, an SOC calibration is performed to accurately estimate the state of charge level. | 
 | **Configuration (PV)** |**Information**|  
 | `zendure_setting_pv_export_disabled`    | Check this to disable the pv export. When the battery is full it will no longer export the energy of connected solarpanels. | 

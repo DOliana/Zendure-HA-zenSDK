@@ -2788,8 +2788,9 @@ views:
 
 
               The soft discharge limit stops automatic discharging above the
-              device minimum. For example, use 15% with a 10% device minimum
-              to leave 5% for battery self-discharge.
+              device minimum, so self-discharge does not unnecessarily trigger
+              recharging from the grid. For example, 15% with a 10% device
+              minimum leaves a 5% margin.
             text_only: true
             visibility:
               - condition: state
