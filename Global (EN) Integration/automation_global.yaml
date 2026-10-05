@@ -721,6 +721,11 @@ actions:
               {{ states('sensor.zendure_set_discharge_power') | float !=
               states('input_number.zendure_setting_max_discharge_power') | float
               }}
+          - condition: template
+            value_template: >-
+              {{ states('sensor.zendure_total_state_of_charge') | float(0) >
+                 [states('sensor.zendure_minimum_state_of_charge') | float(0),
+                  states('input_number.zendure_setting_soft_discharge_state_of_charge') | float(5)] | max }}
           - condition: or
             conditions:
               - condition: state

@@ -731,6 +731,11 @@ actions:
               float !=
               states('input_number.zendure_2400_ac_max_ontlaadvermogen') | float
               }}
+          - condition: template
+            value_template: >-
+              {{ states('sensor.zendure_2400_ac_laadpercentage') | float(0) >
+                 [states('sensor.zendure_2400_ac_minimale_laadpercentage') | float(0),
+                  states('input_number.zendure_2400_ac_zachte_ontlaadgrens') | float(5)] | max }}
           - condition: or
             conditions:
               - condition: state
