@@ -232,6 +232,15 @@ input_number:
     unit_of_measurement: '%'
     mode: box
 
+  zendure_setting_soft_discharge_state_of_charge:
+    name: Zendure Soft Discharge State Of Charge
+    icon: mdi:battery-arrow-down
+    min: 5
+    max: 100
+    step: 1
+    unit_of_measurement: '%'
+    mode: box
+
   zendure_setting_maximum_allowed_state_of_charge:
     name: Zendure Maximum Allowed State Of Charge
     icon: mdi:percent-box
@@ -342,6 +351,13 @@ utility_meter:
 
 template:
   - binary_sensor:
+      - name: "Zendure Automatic Discharge Allowed"
+        unique_id: zendure_automatic_discharge_allowed
+        state: >
+          {{ states('sensor.zendure_total_state_of_charge') | float(0) >
+             [states('sensor.zendure_minimum_state_of_charge') | float(0),
+              states('input_number.zendure_setting_soft_discharge_state_of_charge') | float(5)] | max }}
+
       - name: "Home Energy Zero Import Active"
         unique_id: home_energy_zero_import_active
         device_class: power
@@ -493,8 +509,8 @@ template:
               {% set nu = now() %}
               {% if raw %}
                 {% set current_hour_values = raw 
-                  | selectattr('start', '>=', nu.replace(minute=0, second=0, microsecond=0)) 
-                  | selectattr('start', '<', nu.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)) 
+                  | selectattr('start', '>=', nu.replace(minute=0, second=0, microsecond=0))
+                  | selectattr('start', '<', nu.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1))
                   | map(attribute='value') 
                   | list %}
                 {% if current_hour_values %}
@@ -995,7 +1011,7 @@ template:
               | list %}
             {{ 'Yes' if actief | length > 0 else 'No' }}
           {% else %}
-            Onbekend
+            Unknown
           {% endif %}
         attributes:
           raw_today: >
@@ -1099,7 +1115,7 @@ template:
               | list %}
             {{ 'Yes' if in_goedkoop_blok | length > 0 else 'No' }}
           {% else %}
-            Onbekend
+            Unknown
           {% endif %}
         attributes:
           raw_today: >
@@ -1676,7 +1692,7 @@ rest:
           {% set pv_active = (solar > 0) or (grid_off < 0) %}
           {% set states = {0: "Battery", 2: "Home"} %}
           {% set packState = value_json['properties']['pass'] | int %}
-          {{ states.get(packState, "Onbekend") if pv_active else "PV Offline" }}
+          {{ states.get(packState, "Unknown") if pv_active else "PV Offline" }}
         unique_id: zendure_pv_passthrough
         icon: mdi:arrow-decision
 
@@ -1751,7 +1767,7 @@ rest:
         value_template: >
           {% set states = {0: "Normal", 1: "Eco", 2: "Turned Off"} %}
           {% set packState = value_json.get('properties', {}).get('gridOffMode', 2) | int %}
-          {{ states.get(packState, "Onbekend") }}
+          {{ states.get(packState, "Unknown") }}
         unique_id: zendure_offgrid_mode
         icon: >
          {% if this.state == 'Normal' %}
@@ -1822,7 +1838,7 @@ rest:
         value_template: >
           {% set states = {0: "Normal Operation", 1: "Charging Limit Reached", 2: "Discharge Limit Reached", 16: "Normal Operation", 17: "Charging Limit Reached", 18: "Discharge Limit Reached"} %}
           {% set packState = value_json['properties']['socLimit'] | int %}
-          {{ states.get(packState, "Onbekend") }}
+          {{ states.get(packState, "Unknown") }}
         unique_id: zendure_soc_limit_status
         icon: >
          {% if this.state == 'Normal Operation' %}
@@ -1964,9 +1980,9 @@ rest:
       - name: "Zendure Relay Mode"
         unique_id: zendure_relay_mode
         value_template: >
-          {% set states = {1: "Oplaadstand", 2: "Ontlaadstand"} %}
+          {% set states = {1: "Charging", 2: "Discharging"} %}
           {% set packState = value_json['properties']['acMode'] | int %}
-          {{ states.get(packState, "Onbekend") }}
+          {{ states.get(packState, "Unknown") }}
         icon: mdi:swap-vertical-bold
         
       - name: "Zendure Serial Number"
@@ -2185,7 +2201,7 @@ rest:
         value_template: >
           {% set states = {1: "RAM Memory", 0: "Flash Memory"} %}
           {% set packState = value_json['properties']['smartMode'] | int %}
-          {{ states.get(packState, "Onbekend") }}
+          {{ states.get(packState, "Unknown") }}
         unique_id: zendure_storage_mode
         icon: mdi:floppy
 
@@ -2299,7 +2315,7 @@ rest:
         value_template: >
           {% set states = {0: "No Notifications", 1: "Check Zendure APP"} %}
           {% set packState = value_json['properties']['is_error'] | int %}
-          {{ states.get(packState, "Onbekend") }}
+          {{ states.get(packState, "Unknown") }}
         unique_id: zendure_error
         icon: mdi:battery-alert
 
@@ -2307,7 +2323,7 @@ rest:
         value_template: >
           {% set states = {0: "No", 1: "Yes"} %}
           {% set packState = value_json['properties']['socStatus'] | int %}
-          {{ states.get(packState, "Onbekend") }}
+          {{ states.get(packState, "Unknown") }}
         unique_id: zendure_calibrating
         icon: mdi:battery-heart-variant
 
