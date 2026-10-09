@@ -232,6 +232,15 @@ input_number:
     unit_of_measurement: '%'
     mode: box
 
+  zendure_setting_soft_discharge_soc:
+    name: Zendure Soft Discharge SOC
+    icon: mdi:battery-low
+    min: 5
+    max: 50
+    step: 1
+    unit_of_measurement: '%'
+    mode: box
+
   zendure_setting_maximum_allowed_state_of_charge:
     name: Zendure Maximum Allowed State Of Charge
     icon: mdi:percent-box
@@ -352,6 +361,18 @@ template:
           {% else %}
             mdi:flash
           {% endif %}
+
+  - sensor:
+      - name: "Zendure Minimum Discharge State Of Charge"
+        unique_id: zendure_minimum_discharge_state_of_charge
+        device_class: battery
+        unit_of_measurement: "%"
+        state_class: measurement
+        state: >
+          {{ [
+            states('sensor.zendure_minimum_state_of_charge') | float(0),
+            states('input_number.zendure_setting_soft_discharge_soc') | float(5)
+          ] | max }}
 
   - trigger:
       - platform: state

@@ -2796,7 +2796,10 @@ views:
               You can also disable the SOC protection of this integration. When
               the battery drops below the minimum allowed charge level, it will
               no longer be automatically recharged. The system will wait until
-              the BMS (Battery Management System) takes action.
+              the BMS (Battery Management System) takes action. The soft
+              discharge SOC stops discharging at the higher of its set
+              percentage and the device minimum SOC. Charging and minimum-SOC
+              protection are unchanged.
             text_only: true
             visibility:
               - condition: state
@@ -2818,6 +2821,8 @@ views:
                 name: SOC Protection Disabled
               - entity: input_number.zendure_setting_minimum_allowed_state_of_charge
                 name: Min. State Of Charge
+              - entity: input_number.zendure_setting_soft_discharge_soc
+                name: Soft Discharge SOC
               - entity: input_number.zendure_setting_maximum_allowed_state_of_charge
                 name: Max. State Of Charge
           - type: heading
