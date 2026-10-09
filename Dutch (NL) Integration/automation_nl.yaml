@@ -194,6 +194,9 @@ actions:
             entity_id: input_select.zendure_2400_ac_modus_selecteren
             state:
               - Snel ontladen
+          - condition: state
+            entity_id: binary_sensor.zendure_2400_ac_automatisch_ontladen_toegestaan
+            state: "on"
         sequence:
           - action: rest_command.zendure_snel_ontladen
             data:
@@ -726,6 +729,9 @@ actions:
               float !=
               states('input_number.zendure_2400_ac_max_ontlaadvermogen') | float
               }}
+          - condition: state
+            entity_id: binary_sensor.zendure_2400_ac_automatisch_ontladen_toegestaan
+            state: "on"
           - condition: or
             conditions:
               - condition: state
@@ -907,6 +913,33 @@ actions:
           - condition: trigger
             id:
               - aansturing_trigger
+          - condition: state
+            entity_id: input_select.zendure_2400_ac_modus_selecteren
+            state:
+              - Snel ontladen
+              - Nul op de meter
+              - Alleen slim ontladen
+              - Dynamisch NOM
+              - Dynamisch NOM (Duur)
+              - Dynamisch Handelen + NOM
+          - condition: state
+            entity_id: input_boolean.dynamisch_ontladen_loopt
+            state: "off"
+          - condition: numeric_state
+            entity_id: sensor.zendure_2400_ac_vermogen_aansturing
+            below: 0
+          - condition: state
+            entity_id: binary_sensor.zendure_2400_ac_automatisch_ontladen_toegestaan
+            state: "off"
+        sequence:
+          - action: rest_command.zendure_stop_met_alles
+            data:
+              sn: "{{ states('sensor.zendure_2400_ac_serienummer') }}"
+        alias: Stop automatisch ontladen bij zachte ontlaadgrens
+      - conditions:
+          - condition: trigger
+            id:
+              - aansturing_trigger
           - alias: >-
               sensor.p1_aansturing_vermogen groter dan
               input_number.zendure_2400_ac_start_ontladen_bij
@@ -920,11 +953,10 @@ actions:
               - Normale werking
               - Laadlimiet bereikt
               - unknown
-          - alias: Tot de minimaal ingestelde SOC
-            condition: template
-            value_template: |
-              {{ states('sensor.zendure_2400_ac_laadpercentage') | float >
-               states('sensor.zendure_2400_ac_minimale_laadpercentage') | float }}
+          - alias: Boven de zachte ontlaadgrens
+            condition: state
+            entity_id: binary_sensor.zendure_2400_ac_automatisch_ontladen_toegestaan
+            state: "on"
           - condition: numeric_state
             entity_id: sensor.zendure_2400_ac_vermogen_aansturing
             above: -30
@@ -1041,11 +1073,10 @@ actions:
               - Normale werking
               - Laadlimiet bereikt
               - unknown
-          - alias: Tot de minimaal ingestelde SOC
-            condition: template
-            value_template: |
-              {{ states('sensor.zendure_2400_ac_laadpercentage') | float >
-               states('sensor.zendure_2400_ac_minimale_laadpercentage') | float }}
+          - alias: Boven de zachte ontlaadgrens
+            condition: state
+            entity_id: binary_sensor.zendure_2400_ac_automatisch_ontladen_toegestaan
+            state: "on"
           - alias: >-
               Nieuw in te stellen vermogen is anders dan huidig batterij
               vermogen
@@ -1829,11 +1860,10 @@ actions:
               - Normale werking
               - Laadlimiet bereikt
               - unknown
-          - alias: Tot de minimaal ingestelde SOC
-            condition: template
-            value_template: |
-              {{ states('sensor.zendure_2400_ac_laadpercentage') | float >
-               states('sensor.zendure_2400_ac_minimale_laadpercentage') | float }}
+          - alias: Boven de zachte ontlaadgrens
+            condition: state
+            entity_id: binary_sensor.zendure_2400_ac_automatisch_ontladen_toegestaan
+            state: "on"
           - condition: state
             entity_id: sensor.dynamisch_duurste_periode
             state:
@@ -1863,42 +1893,59 @@ actions:
               minutes: 0
               seconds: 5
               milliseconds: 0
-          - action: rest_command.zendure_snel_ontladen
-            data:
-              sn: '{{ states(''sensor.zendure_2400_ac_serienummer'') }}'
-              outputLimit: >-
-                {{ states('input_number.zendure_2400_ac_max_ontlaadvermogen') |
-                int }}
-          - action: logbook.log
-            data:
-              message: 💲Dynamisch duur ontladen gestart —
-              entity_id: input_select.zendure_2400_ac_modus_selecteren
-              name: ' '
-          - wait_for_trigger:
-              - alias: Tot minimale SOC
-                trigger: template
-                value_template: |-
-                  {{ states('sensor.zendure_2400_ac_laadpercentage') | float <=
-                     states('sensor.zendure_2400_ac_minimale_laadpercentage') | float }}
-                for:
-                  hours: 0
-                  minutes: 0
-                  seconds: 15
-              - entity_id:
-                  - sensor.dynamisch_duurste_periode
-                to:
-                  - Nee
-                trigger: state
-              - trigger: state
-                entity_id:
-                  - input_select.zendure_2400_ac_modus_selecteren
-              - trigger: state
-                entity_id:
-                  - input_number.dynamisch_minimale_spread
-              - trigger: state
-                entity_id:
-                  - sensor.dynamisch_spread_indicatie
-            continue_on_timeout: false
+          - if:
+              - condition: state
+                entity_id: binary_sensor.zendure_2400_ac_automatisch_ontladen_toegestaan
+                state: "on"
+            then:
+              - action: rest_command.zendure_snel_ontladen
+                data:
+                  sn: "{{ states('sensor.zendure_2400_ac_serienummer') }}"
+                  outputLimit: >-
+                    {{ states('input_number.zendure_2400_ac_max_ontlaadvermogen') |
+                    int }}
+              - action: logbook.log
+                data:
+                  message: 💲Dynamisch duur ontladen gestart —
+                  entity_id: input_select.zendure_2400_ac_modus_selecteren
+                  name: " "
+              - repeat:
+                  sequence:
+                    - wait_for_trigger:
+                        - alias: Minimale ingestelde SOC bereikt
+                          trigger: template
+                          value_template: |-
+                            {{ states('sensor.zendure_2400_ac_laadpercentage') | float <=
+                               states('sensor.zendure_2400_ac_minimale_laadpercentage') | float }}
+                          for:
+                            hours: 0
+                            minutes: 0
+                            seconds: 15
+                        - alias: Zachte ontlaadgrens
+                          trigger: state
+                          entity_id: binary_sensor.zendure_2400_ac_automatisch_ontladen_toegestaan
+                          to: "off"
+                        - entity_id:
+                            - sensor.dynamisch_duurste_periode
+                          to:
+                            - Nee
+                          trigger: state
+                        - trigger: state
+                          entity_id:
+                            - input_select.zendure_2400_ac_modus_selecteren
+                        - trigger: state
+                          entity_id:
+                            - input_number.dynamisch_minimale_spread
+                        - trigger: state
+                          entity_id:
+                            - sensor.dynamisch_spread_indicatie
+                      timeout: "00:00:05"
+                      continue_on_timeout: true
+                  until:
+                    - condition: template
+                      value_template: >-
+                        {{ wait.trigger is not none or
+                           not is_state('binary_sensor.zendure_2400_ac_automatisch_ontladen_toegestaan', 'on') }}
           - action: input_boolean.turn_off
             target:
               entity_id:

@@ -232,6 +232,15 @@ input_number:
     unit_of_measurement: '%'
     mode: box
 
+  zendure_2400_ac_zachte_ontlaadgrens:
+    name: Zendure 2400 AC Zachte Ontlaadgrens
+    icon: mdi:battery-arrow-down
+    min: 5
+    max: 100
+    step: 1
+    unit_of_measurement: '%'
+    mode: box
+
   zendure_2400_ac_maximaal_toegestaan_laadpercentage:
     name: Zendure 2400 AC Maximaal Toegestaan Laadpercentage
     icon: mdi:percent-box
@@ -342,6 +351,13 @@ utility_meter:
 
 template:
   - binary_sensor:
+      - name: "Zendure 2400 AC Automatisch Ontladen Toegestaan"
+        unique_id: zendure_2400_ac_automatisch_ontladen_toegestaan
+        state: >
+          {{ states('sensor.zendure_2400_ac_laadpercentage') | float(0) >
+             [states('sensor.zendure_2400_ac_minimale_laadpercentage') | float(0),
+              states('input_number.zendure_2400_ac_zachte_ontlaadgrens') | float(5)] | max }}
+
       - name: "P1 Nul Import Actief"
         unique_id: p1_nul_import_actief
         device_class: power

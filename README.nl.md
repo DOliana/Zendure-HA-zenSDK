@@ -77,6 +77,7 @@ homeassistant:
 | **Configuratie (Laadpercentage)** |**Informatie**|  
 | `zendure_2400_ac_soc_bescherming_uitgeschakeld`    | Vink dit aan om de dubbele SOC bescherming uit te schakelen. Wanneer de batterij onder het minimaal toegestaan laadpercentage zakt zal er niet meer automatisch bijgeladen worden. Er word gewacht tot de BMS (batterij management systeem) zelf actie onderneemt. |  
 | `zendure_2400_ac_minimaal_toegestaan_laadpercentage` | **(Instellingsadvies: 10%) 5% t/m 50%** – Geef hier het minimaal toegestaan laadpercentage aan. | 
+| `zendure_2400_ac_zachte_ontlaadgrens` | **5% t/m 100%** – Stop automatisch ontladen boven de minimale laadgrens, zodat zelfontlading niet onnodig bijladen vanuit het net veroorzaakt. Bijvoorbeeld: 15% bij een minimale laadgrens van 10% laat 5% marge. De hoogste grens geldt; instellen op 5% behoudt het eerdere gedrag. Handmatig ontladen blijft mogelijk. |
 | `zendure_2400_ac_maximaal_toegestaan_laadpercentage` | **(Instellingsadvies: 100%) 70% t/m 100%** – Geef hier het maximaal toegestaan laadpercentage aan. Bij 100% vind er een SOC kalibratie plaats om het laadpercentage goed te kunnen inschatten. | 
 | **Configuratie (PV)** |**Informatie**|  
 | `zendure_2400_ac_pv_export_uitgeschakeld` | Vink dit aan om PV export uit te schakelen. Als de batterij vol is zal er niet langer energie geexporteerd worden van de verbonden zonnepanelen. | 
